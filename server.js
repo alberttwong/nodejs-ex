@@ -88,13 +88,10 @@ app.get('/', function (req, res) {
     var col = db.collection('counts');
     // Create a document with request IP and current time of request
     col.insert({ip: req.ip, date: Date.now()});
-    setTimeout(() => { console.log("Delay!"); }, 2000);
-    col.count(function(err, count){
-      if (err) {
-        console.log('Error running count. Message:\n'+err);
-      }
-      res.render('index.html', { pageCountMessage : count, dbInfo: dbDetails });
-    });
+    col.aggregate( [
+      { $count: "myCount" }
+    ]);
+    res.render('index.html', { pageCountMessage : myCount, dbInfo: dbDetails });
   } else {
     res.render('index.html', { pageCountMessage : null});
   }
