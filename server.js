@@ -87,8 +87,11 @@ app.get('/', function (req, res) {
   if (db) {
     var col = db.collection('counts');
     // Create a document with request IP and current time of request
-    col.insert({ip: req.ip, date: Date.now(), url: req.url});
-    var count = col.count();
+    col.insert({ip: req.ip, date: Date.now()});
+    col.countDocuments(function(err, count){
+      if (err) {
+        console.log('Error running count. Message:\n'+err);
+      }
     res.render('index.html', { pageCountMessage : count, dbInfo: dbDetails });
   } else {
     res.render('index.html', { pageCountMessage : null});
